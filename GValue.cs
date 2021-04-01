@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
+#if !SERVER
 using UnityEngine;
+#endif
+using Object = System.Object;
 
 namespace GEngine
 {
@@ -67,43 +71,13 @@ namespace GEngine
             [FieldOffset(0)] internal Single _single;
 
             [FieldOffset(0)] internal Double _double;
-
-            [FieldOffset(0)] internal string _string;
-
-            [FieldOffset(0)] internal Boolean[] _booleans;
-
-            [FieldOffset(0)] internal SByte[] _int8s;
-
-            [FieldOffset(0)] internal Byte[] _uint8s;
-
-            [FieldOffset(0)] internal Char[] _chars;
-
-            [FieldOffset(0)] internal Int16[] _int16s;
-
-            [FieldOffset(0)] internal UInt16[] _uint16s;
-
-            [FieldOffset(0)] internal Int32[] _int32s;
-
-            [FieldOffset(0)] internal UInt32[] _uint32s;
-
-            [FieldOffset(0)] internal Int64[] _int64s;
-
-            [FieldOffset(0)] internal UInt64[] _uint64s;
-
-            [FieldOffset(0)] internal Single[] _singles;
-
-            [FieldOffset(0)] internal Double[] _doubles;
-
-            [FieldOffset(0)] internal string[] _strings;
         };
 
         private Kind _kind;
         private Value _value;
+        private Object _object;
 
-        public Kind Type
-        {
-            get { return _kind; }
-        }
+        public Kind Type => _kind;
 
         public static implicit operator GValue(bool value)
         {
@@ -227,152 +201,155 @@ namespace GEngine
 
         public static implicit operator GValue(string value)
         {
-            return new GValue() {_kind = Kind.STRING, _value = new Value() {_string = value}};
+            return new GValue() {_kind = Kind.STRING, _object = value};
         }
 
         public static implicit operator string(GValue value)
         {
-            return value._value._string;
+            return value.ToString();
         }
 
         public static implicit operator GValue(bool[] value)
         {
-            return new GValue() {_kind = Kind.BOOLEAN_ARRAY, _value = new Value() {_booleans = value}};
+            return new GValue() {_kind = Kind.BOOLEAN_ARRAY, _object = value};
         }
 
         public static implicit operator bool[](GValue value)
         {
-            return value._value._booleans;
+            return value._kind == Kind.BOOLEAN_ARRAY ? (bool[]) value._object : null;
         }
 
         public static implicit operator GValue(sbyte[] value)
         {
-            return new GValue() {_kind = Kind.SBYTE_ARRAY, _value = new Value() {_int8s = value}};
+            return new GValue() {_kind = Kind.SBYTE_ARRAY, _object = value};
         }
 
         public static implicit operator sbyte[](GValue value)
         {
-            return value._value._int8s;
+            return value._kind == Kind.SBYTE_ARRAY ? (sbyte[]) value._object : null;
         }
 
         public static implicit operator GValue(byte[] value)
         {
-            return new GValue() {_kind = Kind.BYTE_ARRAY, _value = new Value() {_uint8s = value}};
+            return new GValue() {_kind = Kind.BYTE_ARRAY, _object = value};
         }
 
         public static implicit operator byte[](GValue value)
         {
-            return value._value._uint8s;
+            return value._kind == Kind.BYTE_ARRAY ? (byte[]) value._object : null;
         }
 
         public static implicit operator GValue(char[] value)
         {
-            return new GValue() {_kind = Kind.CHAR_ARRAY, _value = new Value() {_chars = value}};
+            return new GValue() {_kind = Kind.CHAR_ARRAY, _object = value};
         }
 
         public static implicit operator char[](GValue value)
         {
-            return value._value._chars;
+            return value._kind == Kind.CHAR_ARRAY ? (char[]) value._object : null;
         }
 
         public static implicit operator GValue(short[] value)
         {
-            return new GValue() {_kind = Kind.SHORT_ARRAY, _value = new Value() {_int16s = value}};
+            return new GValue() {_kind = Kind.SHORT_ARRAY, _object = value};
         }
 
         public static implicit operator short[](GValue value)
         {
-            return value._value._int16s;
+            return value._kind == Kind.SHORT_ARRAY ? (short[]) value._object : null;
         }
 
         public static implicit operator GValue(ushort[] value)
         {
-            return new GValue() {_kind = Kind.USHORT_ARRAY, _value = new Value() {_uint16s = value}};
+            return new GValue() {_kind = Kind.USHORT_ARRAY, _object = value};
         }
 
         public static implicit operator ushort[](GValue value)
         {
-            return value._value._uint16s;
+            return value._kind == Kind.USHORT_ARRAY ? (ushort[]) value._object : null;
         }
 
         public static implicit operator GValue(int[] value)
         {
-            return new GValue() {_kind = Kind.INT_ARRAY, _value = new Value() {_int32s = value}};
+            return new GValue() {_kind = Kind.INT_ARRAY, _object = value};
         }
 
         public static implicit operator int[](GValue value)
         {
-            return value._value._int32s;
+            return value._kind == Kind.INT_ARRAY ? (int[]) value._object : null;
         }
 
         public static implicit operator GValue(uint[] value)
         {
-            return new GValue() {_kind = Kind.UINT_ARRAY, _value = new Value() {_uint32s = value}};
+            return new GValue() {_kind = Kind.UINT_ARRAY, _object = value};
         }
 
         public static implicit operator uint[](GValue value)
         {
-            return value._value._uint32s;
+            return value._kind == Kind.UINT_ARRAY ? (uint[]) value._object : null;
         }
 
         public static implicit operator GValue(long[] value)
         {
-            return new GValue() {_kind = Kind.LONG_ARRAY, _value = new Value() {_int64s = value}};
+            return new GValue() {_kind = Kind.LONG_ARRAY, _object = value};
         }
 
         public static implicit operator long[](GValue value)
         {
-            return value._value._int64s;
+            return value._kind == Kind.LONG_ARRAY ? (long[]) value._object : null;
         }
 
         public static implicit operator GValue(ulong[] value)
         {
-            return new GValue() {_kind = Kind.ULONG_ARRAY, _value = new Value() {_uint64s = value}};
+            return new GValue() {_kind = Kind.ULONG_ARRAY, _object = value};
         }
 
         public static implicit operator ulong[](GValue value)
         {
-            return value._value._uint64s;
+            return value._kind == Kind.ULONG_ARRAY ? (ulong[]) value._object : null;
         }
 
         public static implicit operator GValue(float[] value)
         {
-            return new GValue() {_kind = Kind.SINGLE_ARRAY, _value = new Value() {_singles = value}};
+            return new GValue() {_kind = Kind.SINGLE_ARRAY, _object = value};
         }
 
         public static implicit operator float[](GValue value)
         {
-            return value._value._singles;
+            return value._kind == Kind.SINGLE_ARRAY ? (float[]) value._object : null;
         }
 
         public static implicit operator GValue(double[] value)
         {
-            return new GValue() {_kind = Kind.DOUBLE_ARRAY, _value = new Value() {_doubles = value}};
+            return new GValue() {_kind = Kind.DOUBLE_ARRAY, _object = value};
         }
 
         public static implicit operator double[](GValue value)
         {
-            return value._value._doubles;
+            return value._kind == Kind.DOUBLE_ARRAY ? (double[]) value._object : null;
         }
 
         public static implicit operator GValue(string[] value)
         {
-            return new GValue() {_kind = Kind.STRING_ARRAY, _value = new Value() {_strings = value}};
+            return new GValue() {_kind = Kind.STRING_ARRAY, _object = value};
         }
 
         public static implicit operator string[](GValue value)
         {
-            return value._value._strings;
+            return value._kind == Kind.STRING_ARRAY ? (string[]) value._object : null;
         }
 
+        #if !SERVER
+        
         public static implicit operator Vector2(GValue value)
         {
-            if (value._value._singles != null)
+            if (value._kind == Kind.SINGLE_ARRAY && value._object != null)
             {
-                if (value._value._singles.Length == 1)
-                    return new Vector2(value._value._singles[0], 0);
-                if (value._value._singles.Length > 1)
-                    return new Vector2(value._value._singles[0], value._value._singles[1]);
+                var singles = (float[]) value._object;
+                if (singles.Length == 1)
+                    return new Vector2(singles[0], 0);
+                if (singles.Length > 1)
+                    return new Vector2(singles[0], singles[1]);
             }
 
             return Vector2.zero;
@@ -380,14 +357,15 @@ namespace GEngine
 
         public static implicit operator Vector3(GValue value)
         {
-            if (value._value._singles != null)
+            if (value._kind == Kind.SINGLE_ARRAY && value._object != null)
             {
-                if (value._value._singles.Length == 1)
-                    return new Vector3(value._value._singles[0], 0, 0);
-                if (value._value._singles.Length == 2)
-                    return new Vector3(value._value._singles[0], value._value._singles[1], 0);
-                if (value._value._singles.Length > 2)
-                    return new Vector3(value._value._singles[0], value._value._singles[1], value._value._singles[2]);
+                var singles = (float[]) value._object;
+                if (singles.Length == 1)
+                    return new Vector3(singles[0], 0, 0);
+                if (singles.Length == 2)
+                    return new Vector3(singles[0], singles[1], 0);
+                if (singles.Length > 2)
+                    return new Vector3(singles[0], singles[1], singles[2]);
             }
 
             return Vector3.zero;
@@ -395,23 +373,23 @@ namespace GEngine
 
         public static implicit operator Color(GValue value)
         {
-            if (value._value._singles != null)
+            if (value._kind == Kind.SINGLE_ARRAY && value._object != null)
             {
-                if (value._value._singles.Length == 3)
-                    return new Color(value._value._singles[0], value._value._singles[1], value._value._singles[2], 1);
-                if (value._value._singles.Length > 3)
-                    return new Color(value._value._singles[0], value._value._singles[1], value._value._singles[2],
-                        value._value._singles[2]);
+                var singles = (float[]) value._object;
+                if (singles.Length == 3)
+                    return new Color(singles[0], singles[1], singles[2], 1);
+                if (singles.Length > 3)
+                    return new Color(singles[0], singles[1], singles[2], singles[2]);
             }
 
-            if (value._value._int32s != null)
+            if (value._kind == Kind.INT_ARRAY && value._object != null)
             {
-                if (value._value._int32s.Length == 3)
-                    return new Color(value._value._int32s[0] * 1.0f / 255, value._value._int32s[1] * 1.0f / 255,
-                        value._value._int32s[2] * 1.0f / 255, 1);
-                if (value._value._int32s.Length > 3)
-                    return new Color(value._value._int32s[0] * 1.0f / 255, value._value._int32s[1] * 1.0f / 255,
-                        value._value._int32s[2] * 1.0f / 255, value._value._int32s[2] * 1.0f / 255);
+                var int32s = (int[]) value._object;
+                if (int32s.Length == 3)
+                    return new Color(int32s[0] * 1.0f / 255, int32s[1] * 1.0f / 255, int32s[2] * 1.0f / 255, 1);
+                if (int32s.Length > 3)
+                    return new Color(int32s[0] * 1.0f / 255, int32s[1] * 1.0f / 255, int32s[2] * 1.0f / 255,
+                        int32s[2] * 1.0f / 255);
             }
 
             return Color.white;
@@ -419,14 +397,18 @@ namespace GEngine
 
         public static implicit operator Vector2[](GValue value)
         {
-            int cn = value._value._singles != null ? value._value._singles.Length : 0;
-            if (cn > 0)
+            if (value._kind == Kind.SINGLE_ARRAY && value._object != null)
             {
-                Vector2[] vecs = new Vector2[cn / 2];
-                for (int i = 0; i < cn && i + 2 <= cn;)
+                var singles = (float[]) value._object;
+                var cn = singles.Length;
+                if (cn > 0)
                 {
-                    vecs[i / 2] = new Vector2(value._value._singles[i], value._value._singles[i + 1]);
-                    i += 2;
+                    Vector2[] vecs = new Vector2[cn / 2];
+                    for (int i = 0; i < cn && i + 2 <= cn;)
+                    {
+                        vecs[i / 2] = new Vector2(singles[i], singles[i + 1]);
+                        i += 2;
+                    }
                 }
             }
 
@@ -435,40 +417,50 @@ namespace GEngine
 
         public static implicit operator Vector3[](GValue value)
         {
-            int cn = value._value._singles != null ? value._value._singles.Length : 0;
-            if (cn > 0)
+            if (value._kind == Kind.SINGLE_ARRAY && value._object != null)
             {
-                Vector3[] vecs = new Vector3[cn / 3];
-                for (int i = 0; i < cn && i + 3 <= cn;)
+                var singles = (float[]) value._object;
+                var cn = singles.Length;
+                if (cn > 0)
                 {
-                    vecs[i / 3] = new Vector3(value._value._singles[i], value._value._singles[i + 1],
-                        value._value._singles[i + 2]);
-                    i += 3;
+                    Vector3[] vecs = new Vector3[cn / 3];
+                    for (int i = 0; i < cn && i + 3 <= cn;)
+                    {
+                        vecs[i / 3] = new Vector3(singles[i], singles[i + 1], singles[i + 2]);
+                        i += 3;
+                    }
                 }
             }
 
             return new Vector3[0];
         }
+        
+        #endif
 
         public static implicit operator Dictionary<int, int>(GValue value)
         {
-            int cn = value._value._int32s != null ? value._value._int32s.Length : 0;
-            Dictionary<int, int> dic = new Dictionary<int, int>(cn / 2);
-            if (cn > 0)
+            if (value._kind == Kind.INT_ARRAY && value._object != null)
             {
-                for (int i = 0; i < cn && i + 2 <= cn;)
+                var int32s = (int[]) value._object;
+                var cn = int32s.Length;
+                Dictionary<int, int> dic = new Dictionary<int, int>(cn / 2);
+                if (cn > 0)
                 {
-                    dic[value._value._int32s[i]] = value._value._int32s[i + 1];
-                    i += 2;
+                    for (int i = 0; i < cn && i + 2 <= cn;)
+                    {
+                        dic[int32s[i]] = int32s[i + 1];
+                        i += 2;
+                    }
                 }
             }
 
-            return dic;
+            return null;
         }
 
         public static bool Parse(string src, string type, out GValue value)
         {
             value = NONE;
+
             switch (type)
             {
                 case "bool":
@@ -524,7 +516,7 @@ namespace GEngine
 
                     return false;
                 case "uint":
-                    if (uint.TryParse(src, out var _uint))
+                    if (Parse(src, out uint _uint))
                     {
                         value = _uint;
                         return true;
@@ -532,7 +524,7 @@ namespace GEngine
 
                     return false;
                 case "long":
-                    if (long.TryParse(src, out var _long))
+                    if (Parse(src, out long _long))
                     {
                         value = _long;
                         return true;
@@ -540,7 +532,7 @@ namespace GEngine
 
                     return false;
                 case "ulong":
-                    if (ulong.TryParse(src, out var _ulong))
+                    if (Parse(src, out ulong _ulong))
                     {
                         value = _ulong;
                         return true;
@@ -556,7 +548,7 @@ namespace GEngine
 
                     return false;
                 case "double":
-                    if (double.TryParse(src, out var _double))
+                    if (Parse(src, out double _double))
                     {
                         value = _double;
                         return true;
@@ -622,7 +614,7 @@ namespace GEngine
                     return false;
                 case "int[]":
                 case "List<int>":
-                case "Dictionary<int, int>":
+                case "Dictionary<int,int>":
                     if (Parse(src, out int[] _ints))
                     {
                         value = _ints;
@@ -689,15 +681,18 @@ namespace GEngine
                         value = _color;
                         return true;
                     }
-
                     return false;
                 default:
+                    if (!string.IsNullOrEmpty(type) && type[0] >= 'A' && type[0] <= 'Z' && Parse(src, out int _enum))//首字母大写按枚举处理，默认转换int
+                    {
+                        value = _enum;
+                        return true;
+                    }
+                    
                     value = src;
                     return true;
                 // throw new NotImplementedException(type);
             }
-
-            return false;
         }
 
         public static bool Parse(string str, out int val)
@@ -730,6 +725,16 @@ namespace GEngine
             val *= s;
 
             return true;
+        }
+        
+        public static bool Parse(string str, out uint val)
+        {
+            val = 0;
+            if (string.IsNullOrEmpty(str)) //不填默认为0
+            {
+                return true;
+            }
+            return uint.TryParse(str, out val);
         }
 
         public static bool Parse(string str, out float val)
@@ -787,6 +792,30 @@ namespace GEngine
         {
             val = str.Length > 0 && (str == "1" || str.ToLower() == "true");
             return true;
+        }
+
+        public static bool Parse(string str, out long val)
+        {
+            val = 0L;
+            if (string.IsNullOrEmpty(str))
+                return true;
+            return long.TryParse(str, out val);
+        }
+        
+        public static bool Parse(string str, out ulong val)
+        {
+            val = 0L;
+            if (string.IsNullOrEmpty(str))
+                return true;
+            return ulong.TryParse(str, out val);
+        }
+        
+        public static bool Parse(string str, out double val)
+        {
+            val = 0d;
+            if (string.IsNullOrEmpty(str))
+                return true;
+            return double.TryParse(str, out val);
         }
 
         public static bool Parse(string str, out string[] val, char separator = ',')
@@ -917,7 +946,7 @@ namespace GEngine
             val = new uint[strs.Length];
             for (int i = 0; i < strs.Length; i++)
             {
-                if (!uint.TryParse(strs[i], out val[i]))
+                if (!Parse(strs[i], out val[i]))
                     return false;
             }
 
@@ -930,7 +959,7 @@ namespace GEngine
             val = new long[strs.Length];
             for (int i = 0; i < strs.Length; i++)
             {
-                if (!long.TryParse(strs[i], out val[i]))
+                if (!Parse(strs[i], out val[i]))
                     return false;
             }
 
@@ -943,7 +972,7 @@ namespace GEngine
             val = new ulong[strs.Length];
             for (int i = 0; i < strs.Length; i++)
             {
-                if (!ulong.TryParse(strs[i], out val[i]))
+                if (!Parse(strs[i], out val[i]))
                     return false;
             }
 
@@ -969,7 +998,7 @@ namespace GEngine
             val = new double[strs.Length];
             for (int i = 0; i < strs.Length; i++)
             {
-                if (!double.TryParse(strs[i], out val[i]))
+                if (!Parse(strs[i], out val[i]))
                     return false;
             }
 
@@ -993,6 +1022,7 @@ namespace GEngine
             return true;
         }
 
+        #if !SERVER
         public static bool Parse(string str, out Color val)
         {
             if (str.Length != 6 && str.Length != 8)
@@ -1032,6 +1062,7 @@ namespace GEngine
 
             return true;
         }
+        #endif
 
         public static bool ParseHexColor(string str, out float[] val)
         {
@@ -1055,12 +1086,12 @@ namespace GEngine
         }
 
         static readonly StringBuilder Builder = new StringBuilder();
-        static readonly List<string> Header = new List<string>();
+        static readonly List<string> Types = new List<string>();
 
         public static List<GValue[]> Parse(string text, string tag)
         {
-            Header.Clear();
             Builder.Clear();
+            Types.Clear();
             List<GValue[]> rows = new List<GValue[]>();
             int row = 0, column = 0, length = text.Length;
             GValue[] values = null;
@@ -1072,18 +1103,17 @@ namespace GEngine
                 if (c == '\n' || c == (char) 166)
                 {
                     if (row == 0)
-                        Header.Add(Builder.ToString());
+                        Types.Add(Builder.ToString());
                     else
                     {
                         if (values == null)
-                            values = new GValue[Header.Count];
+                            values = new GValue[Types.Count];
 
-                        if (column < Header.Count)
+                        if (column < Types.Count)
                         {
-                            if (!Parse(Builder.ToString(), Header[column], out values[column]))
+                            if (!Parse(Builder.ToString(), Types[column], out values[column]))
                             {
-                                Debug.LogError(
-                                    $"配置表{tag}, 数据行第{row + 1}行，第{column}列, 字段 {Header[column]}, 无法解析数据 {Builder.ToString()}。");
+                                Log.Error($"解析{tag}, 数据行第{row + 1}行，第{column}列, 字段 {Types[column]}, 无法解析数据 {Builder.ToString()}。");
                                 break;
                             }
                         }
@@ -1118,9 +1148,112 @@ namespace GEngine
                 }
             }
 
+            Builder.Clear();
+            Types.Clear();
             return rows;
         }
 
+        public static Dictionary<string, string> ParseDic(string text, string tag)
+        {
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+            int row = 0, column = 0, length = text.Length;
+            string key = null;
+            for (int i = 0; i < length; i++)
+            {
+                char c = text[i];
+                if (c == '\r') continue;
+                if (c == '\n' || c == (char) 166)
+                {
+                    if (column == 0)
+                        key = Builder.ToString();
+                    else if (column == 1)
+                    {
+                        if(string.IsNullOrEmpty(key))
+                            Log.Error($"解析数据 {tag}(row: {row+1}) Key 为空.");
+                        else if(dic.ContainsKey(key))
+                            Log.Error($"解析数据 {tag}(row: {row+1}) 存在重复Key： {key}.");
+                        else
+                            dic.Add(key, Builder.ToString());
+                    }
+
+                    Builder.Clear();
+                    column++;
+                }
+                else
+                {
+                    if (c == '\\' && i < length - 1 && text[i + 1] == 'n')
+                    {
+                        Builder.Append('\n');
+                        i++;
+                    }
+                    else
+                    {
+                        Builder.Append(c);
+                    }
+                }
+
+                if (c == '\n')
+                {
+                    row++;
+                    column = 0;
+                }
+            }
+
+            return dic;
+        }
+
+        public static List<GValue> ParseSingleRow(string text, string tag)
+        {
+            List<GValue> values = new List<GValue>();
+            int row = 0, column = 0, length = text.Length;
+            string type = null;
+            for (int i = 0; i < length; i++)
+            {
+                char c = text[i];
+                if (c == '\r') continue;
+                if (c == '\n' || c == (char) 166)
+                {
+                    if (column == 0)
+                        type = Builder.ToString();
+                    else if (column == 1)
+                    {
+                        if(string.IsNullOrEmpty(type))
+                            Log.Error($"解析数据 {tag}(row: {row+1}) Type 为空.");
+                        else if(Parse(Builder.ToString(), type, out var value))
+                            values.Add(value);
+                        else
+                        {
+                            Log.Error($"解析数据 {tag}(row: {row+1}) 字段错误 type:{type}, val:{Builder.ToString()}.");
+                            break;
+                        }
+                    }
+
+                    Builder.Clear();
+                    column++;
+                }
+                else
+                {
+                    if (c == '\\' && i < length - 1 && text[i + 1] == 'n')
+                    {
+                        Builder.Append('\n');
+                        i++;
+                    }
+                    else
+                    {
+                        Builder.Append(c);
+                    }
+                }
+
+                if (c == '\n')
+                {
+                    row++;
+                    column = 0;
+                }
+            }
+
+            return values;
+        }
+        
         public override string ToString()
         {
             switch (_kind)
@@ -1148,37 +1281,37 @@ namespace GEngine
                 case Kind.ULONG:
                     return _value._uint64.ToString();
                 case Kind.SINGLE:
-                    return _value._single.ToString();
+                    return _value._single.ToString(CultureInfo.CurrentCulture);
                 case Kind.DOUBLE:
-                    return _value._double.ToString();
+                    return _value._double.ToString(CultureInfo.CurrentCulture);
                 case Kind.STRING:
-                    return _value._string;
+                    return (string) _object;
                 case Kind.BOOLEAN_ARRAY:
-                    return String.Join(",", _value._booleans);
+                    return String.Join(",", (bool[]) _object);
                 case Kind.SBYTE_ARRAY:
-                    return String.Join(",", _value._int8s);
+                    return String.Join(",", (sbyte[]) _object);
                 case Kind.BYTE_ARRAY:
-                    return String.Join(",", _value._uint8s);
+                    return String.Join(",", (byte[]) _object);
                 case Kind.CHAR_ARRAY:
-                    return String.Join(",", _value._chars);
+                    return String.Join(",", (char[]) _object);
                 case Kind.SHORT_ARRAY:
-                    return String.Join(",", _value._int16s);
+                    return String.Join(",", (short[]) _object);
                 case Kind.USHORT_ARRAY:
-                    return String.Join(",", _value._uint16s);
+                    return String.Join(",", (ushort[]) _object);
                 case Kind.INT_ARRAY:
-                    return String.Join(",", _value._int32s);
+                    return String.Join(",", (int[]) _object);
                 case Kind.UINT_ARRAY:
-                    return String.Join(",", _value._uint32s);
+                    return String.Join(",", (uint[]) _object);
                 case Kind.LONG_ARRAY:
-                    return String.Join(",", _value._int64s);
+                    return String.Join(",", (long[]) _object);
                 case Kind.ULONG_ARRAY:
-                    return String.Join(",", _value._uint64s);
+                    return String.Join(",", (ulong[]) _object);
                 case Kind.SINGLE_ARRAY:
-                    return String.Join(",", _value._singles);
+                    return String.Join(",", (float[]) _object);
                 case Kind.DOUBLE_ARRAY:
-                    return String.Join(",", _value._doubles);
+                    return String.Join(",", (double[]) _object);
                 case Kind.STRING_ARRAY:
-                    return String.Join("\n", _value._booleans);
+                    return String.Join("\n", (string[]) _object);
             }
 
             return String.Empty;
